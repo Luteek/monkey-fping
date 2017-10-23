@@ -1,23 +1,20 @@
 import asyncio
 from subprocess import Popen, PIPE
 
+@asyncio.coroutine
 def fping_(ip, parameters):
     print('start ping ip %s' % ip)
-    """Если пул свободен, начинаем выполнение и отдаем управление в главный луп"""
-    # logging.info(u'start ping ip %s' % ip)
-    line = ('fping' + ' ' + ip + ' ' + parameters)
+    line = ('ping' + ' ' + ip + ' ' + parameters)
     cmd = Popen(line.split(' '), stdout=PIPE)
-    yield from asyncio.sleep(0)
     data_(cmd)
+    yield from asyncio.sleep(5)
 
 @asyncio.coroutine
 def data_(cmd):
-    while True:
-        if cmd.returncode:
-            output = cmd.stdout.readline()
-            output = str(output)
-            print("NUMBER: ", output)
-        yield from asyncio.sleep(4)
+    while cmd.stdout:
+        for line in cmd.stdout:
+            print("NUMBER: ", line)
+    yield from asyncio.sleep(4)
 
 print('hello')
 
