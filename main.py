@@ -6,20 +6,22 @@ def fping_(ip, parameters):
     """Если пул свободен, начинаем выполнение и отдаем управление в главный луп"""
     # logging.info(u'start ping ip %s' % ip)
     line = ('fping' + ' ' + ip + ' ' + parameters)
-    data_(Popen(line.split(' '), stdout=PIPE))
+    cmd = Popen(line.split(' '), stdout=PIPE)
+    data_(cmd)
 
 @asyncio.coroutine
 def data_(cmd):
     while True:
-        output = cmd.communicate()[0]
-        output = str(output)
-        print("NUMBER: ", output)
+        if cmd.returncode:
+            output = cmd.communicate()[0]
+            output = str(output)
+            print("NUMBER: ", output)
         yield from asyncio.sleep(4)
 
 print('hello')
 try:
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(fping_('8.8.8.8', ' -t'))
+    loop.run_until_complete(fping_('8.8.8.8', ' -Q 2 -p 50 -l'))
 except:
     print('some')
 finally:
