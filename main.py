@@ -7,6 +7,7 @@ def fping_(ip, parameters):
     # logging.info(u'start ping ip %s' % ip)
     line = ('fping' + ' ' + ip + ' ' + parameters)
     cmd = Popen(line.split(' '), stdout=PIPE)
+    yield from asyncio.sleep(0)
     data_(cmd)
 
 @asyncio.coroutine
